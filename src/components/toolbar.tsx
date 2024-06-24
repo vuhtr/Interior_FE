@@ -114,7 +114,7 @@ export default function Toolbar({
         if (editSketchMode === "pencil") {
             setStrokeColor("#000000")
             if (interactiveMode === "draw-scribble")
-                setStrokeSize(20)
+                setStrokeSize(10)
             else
                 setStrokeSize(2)
         } else {
@@ -173,6 +173,7 @@ export default function Toolbar({
                     layoutType={layoutType}
                     setLayoutType={setLayoutType}
                     setInteractiveMode={setInteractiveMode}
+                    setData={setData}
                 />
             )}
             {generateMode === "generateLayout" && (
@@ -466,17 +467,37 @@ function GenerateTab({
     layoutType,
     setLayoutType,
     setInteractiveMode,
+    setData
 }: {
     layoutType: string
     setLayoutType: (layoutType: "None" | "canny" | "depth" | "stroke" | "mlsd" | 'scribble') => void
     setInteractiveMode: (
         mode: "click" | "box" | "everything" | "stroke" | "manual" | "edit-sketch" | 'draw-scribble'
     ) => void
+    setData: (data: any) => void
 }) {
     useEffect(() => {
         setLayoutType("None")
         setInteractiveMode("everything")
     }, [])
+
+
+    // force whiteboard
+    const setupWhiteBoard = () => {
+        // read image from file path
+        const boardPath = "/toolbar/board.png"
+        const boardImg = new Image()
+        boardImg.src = boardPath
+        boardImg.onload = () => {
+            const newData = {
+                width: boardImg.width,
+                height: boardImg.height,
+                file: null,
+                img: boardImg
+            }
+            setData(newData)
+        }
+    }
 
     return (
         <div className="flex flex-col gap-4">
@@ -527,6 +548,7 @@ function GenerateTab({
                                 : "opacity-50 hover:opacity-80 ") + "w-10/12"
                         }
                         onClick={() => {
+                            setupWhiteBoard()
                             setLayoutType("scribble")
                             setInteractiveMode("draw-scribble")
                         }}
