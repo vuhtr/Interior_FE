@@ -113,12 +113,19 @@ export default function Toolbar({
     useEffect(() => {
         if (editSketchMode === "pencil") {
             setStrokeColor("#000000")
-            setStrokeSize(2)
+            if (interactiveMode === "draw-scribble")
+                setStrokeSize(20)
+            else
+                setStrokeSize(2)
         } else {
+            // erase
             setStrokeColor("#FFFFFF")
-            setStrokeSize(20)
+            if (interactiveMode === "draw-scribble")
+                setStrokeSize(35)
+            else
+                setStrokeSize(20)
         }
-    }, [editSketchMode])
+    }, [editSketchMode, interactiveMode])
 
     return (
         <div className="flex flex-col gap-4 bg-blue-100 bg-opacity-30 p-4 rounded-lg">
